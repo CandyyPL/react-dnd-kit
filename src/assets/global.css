@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+@import '@fontsource/lusitana';
+@import '@fontsource-variable/inter';
+
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, ui-system;
+  --font-serif: 'Lusitana', ui-sans-serif, ui-system;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply m-0 h-full w-full p-0;
+  }
+}
