@@ -1,59 +1,30 @@
-import {
-  closestCorners,
-  DndContext,
-  type DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
 import { useState } from 'react';
-import Column from '@/components/Column.tsx';
-import { arrayMove } from '@dnd-kit/sortable';
+import Button from '@/components/Button.tsx';
+import Basic from '@/components/Basic.tsx';
+import List from '@/components/List.tsx';
+import Kanban from '@/components/Kanban.tsx';
 
-export type TaskType = {
-  id: number;
-  content: string;
+const Tab = {
+  BASIC: 0,
+  LIST: 1,
+  KANBAN: 2,
 };
 
+type Tab = (typeof Tab)[keyof typeof Tab];
+
 export default function App() {
-  const [tasks, setTasks] = useState<TaskType[]>([
-    { id: 0, content: 'Lorem ipsum.' },
-    { id: 1, content: 'Dolor sit amet.' },
-    { id: 2, content: 'Consectetur adipiscing elit.' },
-  ]);
-
-  const getTaskPosition = (id: number) => tasks.findIndex((task) => task.id === id);
-
-  const handleDragEnd = (e: DragEndEvent) => {
-    const { active, over } = e;
-
-    if (!over || active.id === over.id) return;
-
-    setTasks(() => {
-      const originalPosition = getTaskPosition(active.id as number);
-      const newPosition = getTaskPosition(over.id as number);
-
-      return arrayMove(tasks, originalPosition, newPosition);
-    });
-  };
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor)
-  );
+  const [activeTab, setActiveTab] = useState<Tab>(Tab.BASIC);
 
   return (
-    <main className='flex min-h-screen flex-col items-center justify-center gap-10 bg-zinc-900 font-sans'>
-      <h1 className='font-serif text-6xl font-bold text-zinc-200'>Task List</h1>
-      <DndContext
-        sensors={sensors}
-        onDragEnd={(e) => handleDragEnd(e)}
-        collisionDetection={closestCorners}>
-        <Column tasks={tasks} />
-      </DndContext>
+    <main className='flex h-full flex-col items-center bg-zinc-800 p-10'>
+      <div className='flex flex-row gap-4'>
+        <Button onClick={() => setActiveTab(Tab.BASIC)}>BASIC</Button>
+        <Button onClick={() => setActiveTab(Tab.LIST)}>LIST</Button>
+        <Button onClick={() => setActiveTab(Tab.KANBAN)}>KANBAN</Button>
+      </div>
+      {activeTab === Tab.BASIC && <Basic />}
+      {activeTab === Tab.LIST && <List />}
+      {activeTab === Tab.KANBAN && <Kanban />}
     </main>
   );
 }
